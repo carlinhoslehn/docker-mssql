@@ -1,14 +1,27 @@
-version: '3'
+version: '3.7'
 
 services:
   db:
-    image: microsoft/mssql-server-linux:2017-latest
+    image: mcr.microsoft.com/mssql/server:2017-latest
     volumes:
       - ./.db:/var/opt/mssql/
-      - /var/opt/mssql/data
+      - ./data:/var/opt/mssql/data
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: secret000@
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mssql
     ports:
       - 1433:1433
-      - 1434:1434
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=TroCarAsenhADOSQL@
+    networks:
+      network:
+        ipv4_address: 10.1.0.5
+volumes:
+  db-data:
+
+networks:
+  network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.1.0.0/16
